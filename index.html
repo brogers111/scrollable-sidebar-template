@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll Gradient Bar</title>
+    <style>
+        body {
+            height: 3000px;
+            background: #fff;
+            margin: 0;
+        }
+
+        .scroll-bar {
+            position: fixed;
+            left: 30px;
+            top: 0;
+            width: 10px;
+            height: 100vh;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+            background: white;
+            transition: background 0.2s ease-in-out;
+        }
+
+        .container{
+            margin: 200px 0px 0px 80px;
+        }
+
+        .text{
+            position: relative;
+            font-size: 50px;
+            margin: 0;
+        }
+
+        .ball{
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transform: translateY(-120%);
+            left: 15px;
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scroll-bar"></div>
+    <div class="container">
+        <h2 class="text">Heading Number One</h2>
+        <div class="ball ball_one"></div>
+    </div>
+    <div class="container">
+        <h2 class="text">Heading Number Two</h2>
+        <div class="ball ball_two"></div>
+    </div>
+
+    <script>
+        const bar = document.querySelector('.scroll-bar');
+        const ballOne = document.querySelector('.ball_one');
+        const ballTwo = document.querySelector('.ball_two');
+
+        window.addEventListener('scroll', () => {
+            let barGradientDepth = ((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100) - 10;
+            let ballToTopOne = ballOne.getBoundingClientRect().top / 10;
+            let ballToTopTwo = ballTwo.getBoundingClientRect().top / 10;
+            let startOfGradient = barGradientDepth + 20;
+            let fadeRange = 10;
+
+            console.log('Start of Bar Gradient:', startOfGradient);
+            console.log('Ball Location to Top:', ballToTopOne);
+            console.log('Ball Location to Top 2:', ballToTopTwo);
+            
+            bar.style.background = `
+                linear-gradient(to bottom, 
+                    rgb(27, 29, 40) 0%,
+                    rgb(27, 29, 40) calc(${barGradientDepth + 10}%),
+                    rgb(255, 255, 255) calc(${barGradientDepth + 20}%),
+                    rgb(255, 255, 255) 100%
+            )`;
+            
+            // rgb(27, 29, 40) 
+            function getTransitionColor(ballToTop) {
+                let progress = Math.min(1, Math.max(0, (startOfGradient - ballToTop) / fadeRange));
+
+                let red = Math.round(255 - (255 - 27) * progress);
+                let green = Math.round(255 - (255 - 29) * progress);
+                let blue = Math.round(255 - (255 - 40) * progress);
+                return `rgb(${red}, ${green}, ${blue})`;
+            }
+
+            ballOne.style.background = getTransitionColor(ballToTopOne);
+            ballTwo.style.background = getTransitionColor(ballToTopTwo);
+        });
+    </script>
+
+</body>
+</html>
